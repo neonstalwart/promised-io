@@ -335,8 +335,9 @@ function rethrow(err){ throw err; }
  * @return promise for the return value from the invoked callback
  */
 exports.whenPromise = function(value, resolvedCallback, rejectCallback, progressCallback){
-	var deferred = defer();
-	if(value && typeof value.then === "function"){
+	var isPromiseLike = value && typeof value.then === "function";
+	var deferred = defer(isPromiseLike && value.cancel);
+	if(isPromiseLike){
 		value.then(function(next){
 			deferred.resolve(next);
 		},function(error){
